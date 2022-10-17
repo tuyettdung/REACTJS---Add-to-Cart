@@ -10,8 +10,15 @@ import {connect} from 'react-redux'
         <td>{spGioHang.tenSP}</td>
         <td> <img style={{width:'50px'}} src={spGioHang.hinhAnh} alt="" /></td>
         <td>{spGioHang.giaBan.toLocaleString()}</td>
-        <td>{spGioHang.soLuong}</td>
+        <td><button onClick={()=>{
+          this.props.tangGiamSoLuong(index,false)
+        }}>-</button>{spGioHang.soLuong}<button onClick={()=>{
+          this.props.tangGiamSoLuong(index,true)
+        }}>+</button></td>
         <td>{(spGioHang.soLuong*spGioHang.giaBan).toLocaleString()}</td>
+        <td><button className='btn btn-danger' onClick={()=>{
+          this.props.xoaGioHangIndex(index)
+        }}>Xóa</button></td>
       </tr>
     })
   }
@@ -28,11 +35,15 @@ import {connect} from 'react-redux'
               <th>Gía bán</th>
               <th>Số lượng</th>
               <th>Thành tiền</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {this.renderGioHang()}
           </tbody>
+          <tfoot>
+            <td colSpan="5"></td>
+          </tfoot>
         </table>
       </div>
     )
@@ -43,10 +54,28 @@ import {connect} from 'react-redux'
 const mapStateToProps = (state) => {
 return {
   gioHang: state.gioHangReducer.gioHang
-
-
 }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    xoaGioHangIndex: (index) => {
+      const action = {
+        type: 'XOA_GIO_HANG',
+        index
+      }
+      dispatch(action)
+    },
+    tangGiamSoLuong: (index,tangGiam) => {
+      const action = {
+        type: 'TANG_GIAM_SL',
+        index,
+        tangGiam
+      }
+      dispatch(action)
+    }
+  }
 }
 
 
-export default connect(mapStateToProps,null)(ModalGioHang)
+export default connect(mapStateToProps,mapDispatchToProps)(ModalGioHang)
